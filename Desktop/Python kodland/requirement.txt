@@ -1,0 +1,1 @@
+pip install numpy 2.3.5 pgzero 1.2.1 pygame  2.6.1
