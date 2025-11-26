@@ -30,7 +30,7 @@ level_map = [
     "T.......CC..A..C.....B..........C...C............T",
     "T.........C.......CCC..............A....CCC......T",
     "T...............................A................T",
-    "T...G...............B......B...WWWWWWW..........WT",
+    "T...G...............B........B.WWWWWWW..........WT",
     "TP......A........A.............TTTTTTT..........TT",
     "TWWWWWWWWWWW...WWWWWWWWWW...WWWTTTTTTTWWWWWWWWWWTT",
     "TTTTTTTTTTTT...TTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTT",
@@ -85,7 +85,6 @@ class GameSprite(Actor):
         
         # Espelhamento manual (se a imagem original olha para a direita)
         if self.facing_left:
-             # Nota: PgZero não tem flip fácil nativo sem Pygame Surface, 
              if not img_name.endswith("_left"):
                  self.image = img_name + "_left"
         else:
@@ -142,7 +141,7 @@ class Hero(GameSprite):
             self.vy = JUMP_STRENGTH
             self.on_ground = False
             if SOUND_ENABLED:
-                # sounds.jump.play() # Descomente se tiver o som
+                sounds.jump.play()
                 pass
 
         # 5. Física Vertical
@@ -203,7 +202,7 @@ class Hero(GameSprite):
         if self.has_gun:
             self.recoil_timer = 10 
             if SOUND_ENABLED:
-                # sounds.shoot.play()
+                sounds.gun.play() 
                 pass
             
             b_y = self.y - 25
@@ -228,15 +227,14 @@ class Hero(GameSprite):
         # 3. Desenha
         super().draw()
 
-        # 4. RESTAURA a posição (CRUCIAL!)
-        # Se esquecer isso aqui, ele cai do mapa mesmo!
+        # 4. RESTAURA a posição
         self.y -= breath_offset 
         self.x += camera_x        
 
 class Enemy(GameSprite):
     def __init__(self, x, y, enemy_type):
         self.enemy_type = enemy_type
-        base = f"inimigo{enemy_type}" # ex: inimigoazul
+        base = f"inimigo{enemy_type}"
         # Define listas de animação
         idles = [f"{base}1"]
         moves = [f"{base}1", f"{base}2"]
@@ -247,9 +245,8 @@ class Enemy(GameSprite):
 
         # --- LÓGICA DE DESINCRONIZAÇÃO (ASSÍNCRONA) ---
         
-        # 1. Velocidade Variável (Opcional, mas ajuda muito)
-        # Alguns são um pouco mais rápidos (ex: entre 1.5 e 2.5)
-        # Usamos round() para não quebrar muito o pixel art
+        # 1. Velocidade Variável
+        # round() para não quebrar muito o pixel art
         speed_variation = random.choice([1.5, 2, 2.5])
 
         # 2. Direção Inicial Aleatória
@@ -258,9 +255,7 @@ class Enemy(GameSprite):
 
         self.vx = speed_variation * initial_direction
         
-        # 3. Fase da Patrulha ("Já andei um pouco")
-        # Define que o inimigo já "caminhou" uma parte aleatória da rota
-        # Isso garante que eles não cheguem na parede todos juntos
+        # 3. Fase da Patrulha
         self.max_dist = 200
         self.dist_traveled = random.randint(0, int(self.max_dist / 2))
         
@@ -355,7 +350,6 @@ def create_impact(x, y, direction):
 def update():
     if GAME_STATE == "GAME":
         update_game()
-    # No Menu não precisa de update complexo
 
 def update_game():
     global camera_x
@@ -434,11 +428,15 @@ def draw_menu():
     screen.draw.filled_rect(btn_exit, "gray")
     screen.draw.text("SAIR", center=btn_exit.center, fontsize=30, color="white")
 
+    # Instruções
+    screen.draw.text("CONTROLES:", center=(WIDTH/2, 480), fontsize=25, color="cyan")
+    screen.draw.text("Setas: Mover  |  Espaço: Pular  |  Z: Atirar", center=(WIDTH/2, 520), fontsize=25, color="white")
+
 def draw_game():
     screen.fill((100, 170, 255))
     
     # Desenha objetos com ajuste da câmera
-    # Método: mover temporariamente para desenhar (padrão em PgZero simples)
+    # Método: mover temporariamente para desenhar
     
     # Paredes
     for wall in walls:
