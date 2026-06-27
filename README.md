@@ -1,4 +1,4 @@
-# 🐰 Rabbit Adventure
+# Rabbit Adventure
 
 Plataforma 2D feito em **Python** com **Pygame Zero** (`pgzero`). Você controla um
 coelho que percorre a fase, pula entre plataformas, pega uma arma e atira nos
