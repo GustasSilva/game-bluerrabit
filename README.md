@@ -61,13 +61,25 @@ pgzrun game.py
 
 ```
 game-bluerrabit/
-├── game.py              # Jogo principal (Pygame Zero)
+├── game.py              # Entrada: hooks do Pygame Zero (update/draw/inputs) e menu
+├── settings.py          # Constantes e o mapa do nível
+├── state.py             # Estado compartilhado (player, câmera, listas)
+├── entities.py          # Sprites: GameSprite, Hero, Enemy, Bullet, ImpactEffect
+├── level.py             # Construção do nível a partir do mapa de tiles
 ├── aumentarsprites.py   # Utilitário: padroniza os PNGs de images/ para 48x48
 ├── images/              # Sprites (herói, inimigos, bala, arma, cenário)
 ├── music/               # Trilha sonora
 ├── sounds/              # Efeitos sonoros (pulo, tiro)
 └── requirements.txt
 ```
+
+### Organização do código
+O jogo é executado pelo `game.py` (`pgzrun game.py`), que contém apenas os
+*hooks* que o Pygame Zero procura no módulo principal e a tela de menu. A lógica
+foi separada em módulos: `settings` (configuração), `state` (estado compartilhado
+em tempo de execução), `entities` (classes de sprite) e `level` (montagem da
+fase). Como o Pygame Zero injeta seus objetos (`Actor`, `keyboard`, `sounds`…)
+apenas no módulo principal, os submódulos os importam de `pgzero.builtins`.
 
 ### Sobre o `aumentarsprites.py`
 Script auxiliar de uso único: redimensiona **todos** os `.png` da pasta `images/`
